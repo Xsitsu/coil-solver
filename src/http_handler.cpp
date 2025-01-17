@@ -2,17 +2,23 @@
 
 #include <curl/curl.h>
 #include <regex>
+#include <format>
 
 HttpHandler::HttpHandler(std::string username, std::string password)
 {
     this->base_url = this->ConstructBaseUrl(username, password);
 }
 
-std::string HttpHandler::GetPuzzleData() const
+std::string HttpHandler::GetPuzzleData(int level) const
 {
     std::string website_data = this->GetWebsiteData();
-    
-    return website_data;
+    std::string puzzle_data = this->ExtractPuzzleData(website_data, level);
+
+    std::string results = puzzle_data;
+
+    //results = website_data + "\n\n\n" + results;
+
+    return results;
 }
 
 std::string HttpHandler::GetWebsiteData() const
@@ -35,6 +41,23 @@ std::string HttpHandler::GetWebsiteData() const
     curl_easy_cleanup(curl);
 
     return readbuffer;
+}
+
+std::string HttpHandler::ExtractPuzzleData(std::string website_data, int level) const
+{
+    std::string pattern = std::format("<script>var curLevel = {}.*;</script>", level);
+    std::regex puzzle_pattern(pattern);
+    std::smatch matches;
+    std::regex_search(website_data, matches, puzzle_pattern);
+
+    std::string results;
+    for (auto match : matches)
+    {
+        results += match;
+        results += "\n";
+    }
+
+    return results;
 }
 
 void HttpHandler::PostPuzzleSolution() const

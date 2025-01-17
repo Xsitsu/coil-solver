@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        std::string dat = handler.GetPuzzleData();
+        std::string dat = handler.GetPuzzleData(25);
         std::cout << "Got: " << dat << std::endl;
     }
     catch (char const* err)
