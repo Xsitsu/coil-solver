@@ -21,8 +21,12 @@ std::string HttpHandler::GetWebsiteData() const
     if (curl == nullptr)
         throw "Curl failed!";
 
+    std::string readbuffer;
+
     curl_easy_setopt(curl, CURLOPT_URL, this->base_url.c_str());
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &(this->write_callback));
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readbuffer);
+
     CURLcode res = curl_easy_perform(curl);
 
     if (res != CURLE_OK)
@@ -30,9 +34,7 @@ std::string HttpHandler::GetWebsiteData() const
 
     curl_easy_cleanup(curl);
 
-    std::string ret = "lmao";
-
-    return ret;
+    return readbuffer;
 }
 
 void HttpHandler::PostPuzzleSolution() const
@@ -42,8 +44,15 @@ void HttpHandler::PostPuzzleSolution() const
 
 std::string HttpHandler::ConstructBaseUrl(std::string username, std::string password)
 {
-    std::string base_url = "http://www.hacker.org/coil/index.php";
+    std::string base_url = "https://www.hacker.org/coil/index.php";
     std::string creds = "?name=" + username + "&password=" + password;
     std::string url = base_url + creds;
     return url;
+}
+
+size_t HttpHandler::write_callback(char *contents, size_t size, size_t nmemb, void *userdata)
+{
+    size_t realsize = size * nmemb;
+    static_cast<std::string*>(userdata)->append(contents, realsize);
+    return realsize;
 }

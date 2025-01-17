@@ -16,6 +16,7 @@ private:
     std::string ConstructBaseUrl(std::string username, std::string password);
 
     std::string GetWebsiteData() const;
+    static size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
 
 };
 
