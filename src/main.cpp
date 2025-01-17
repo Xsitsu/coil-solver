@@ -1,6 +1,13 @@
 #include <iostream>
 
 #include "http_handler.hpp"
+#include "board.hpp"
+
+void output_var(std::string puzzle_data, std::string var_name)
+{
+    Board board;
+    std::cout << var_name << ": '" << board.ExtractVariable(puzzle_data, var_name) << "'" << std::endl << std::endl;
+}
 
 int main(int argc, char* argv[])
 {
@@ -15,16 +22,27 @@ int main(int argc, char* argv[])
 
     HttpHandler handler(username, password);
 
+    std::string puzzle_data;
+
     try
     {
-        std::string dat = handler.GetPuzzleData(25);
-        std::cout << "Got: " << dat << std::endl;
+        puzzle_data = handler.GetPuzzleData(25);
+        std::cout << "Got: " << puzzle_data << std::endl;
     }
     catch (char const* err)
     {
         std::cout << "Error: " << err << std::endl;
         return -1;
     }
+
+    Board board(puzzle_data);
+
+    std::cout << "Width: " << board.size_x << std::endl;
+    std::cout << "Height: " << board.size_y << std::endl;
+
+    //output_var(puzzle_data, "width");
+    //output_var(puzzle_data, "height");
+    //output_var(puzzle_data, "boardStr");
 
     return 0;
 }
