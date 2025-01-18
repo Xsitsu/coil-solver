@@ -1,24 +1,30 @@
 #include <iostream>
-#include <curl/curl.h>
 
-int main(void)
+#include "http_handler.hpp"
+
+int main(int argc, char* argv[])
 {
-    CURL *curl = nullptr;
-    CURLcode res;
+    if (argc != 3)
+    {
+        std::cout << "Need 3 args!!" << std::endl;
+        return -1;
+    }
 
-    curl = curl_easy_init();
-    if (curl == nullptr) return -1;
+    std::string username = argv[1];
+    std::string password = argv[2];
 
-    curl_easy_setopt(curl, CURLOPT_URL, "https://example.com");
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    HttpHandler handler(username, password);
 
-    res = curl_easy_perform(curl);
-
-    if (res != CURLE_OK)
-        fprintf(stderr, "failed! : %s\n",
-            curl_easy_strerror(res));
-
-    curl_easy_cleanup(curl);
+    try
+    {
+        std::string dat = handler.GetPuzzleData();
+        std::cout << "Got: " << dat << std::endl;
+    }
+    catch (char const* err)
+    {
+        std::cout << "Error: " << err << std::endl;
+        return -1;
+    }
 
     return 0;
 }
