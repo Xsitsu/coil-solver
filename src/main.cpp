@@ -37,9 +37,10 @@ int main(int argc, char* argv[])
 
     Board board(puzzle_data);
 
-    std::cout << "Width: " << board.size_x << std::endl;
-    std::cout << "Height: " << board.size_y << std::endl;
-
+    std::cout << "Width: " << board.GetSizeX() << std::endl;
+    std::cout << "Height: " << board.GetSizeY() << std::endl;
+    std::cout << "Tiles:\n" << board.GetTilesStr() << std::endl;
+    
     //output_var(puzzle_data, "width");
     //output_var(puzzle_data, "height");
     //output_var(puzzle_data, "boardStr");
