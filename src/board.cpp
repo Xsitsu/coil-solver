@@ -56,12 +56,56 @@ std::string Board::GetTilesStr() const
             tile_str += "\n";
 
         int cur_tile = this->tiles[i];
-        if (cur_tile == 1)
-            tile_str += "W";
-        else if (cur_tile == 0)
+        if (cur_tile & Board::TileDirection::Valid == Board::TileDirection::Valid)
             tile_str += "_";
+        else
+            tile_str += "W";
     }
     return tile_str;
+}
+
+int Board::GetTileUp(int tile_index) const
+{
+    int new_index = tile_index - this->size_x;
+    if (new_index < 0)
+        return -1;
+
+    return new_index;
+}
+
+int Board::GetTileDown(int tile_index) const
+{
+    int new_index = tile_index + this->size_x;
+    if (new_index >= this->GetNumTiles())
+        return -1;
+
+    return new_index;
+}
+
+int Board::GetTileLeft(int tile_index) const
+{
+    if (this->IsLeftEdge(tile_index))
+        return -1;
+
+    return tile_index - 1;
+}
+
+int Board::GetTileRight(int tile_index) const
+{
+    if (this->IsRightEdge(tile_index))
+        return -1;
+
+    return tile_index + 1;
+}
+
+bool Board::IsLeftEdge(int tile_index) const
+{
+    return (tile_index % this->size_x == 0);
+}
+
+bool Board::IsRightEdge(int tile_index) const
+{
+    return (tile_index % this->size_x == size_x - 1);
 }
 
 void Board::LoadPuzzleData(std::string puzzle_data)
@@ -118,14 +162,33 @@ int* Board::DecodeTiles(std::string puzzle_data) const
     int tile_len = tile_data.length() - 2;
 
     int *t = new int[tile_len];
+    memset(t, Board::TileDirection::All, tile_len * sizeof(int));
 
     for (int i = 0; i < tile_len; i++)
     {
         char cur_tile_str = tile_data.c_str()[i + 1];
         if (cur_tile_str == 'X')
-            t[i] = 1;
-        else if (cur_tile_str == '.')
-            t[i] = 0;
+        {
+            t[i] &= ~(Board::TileDirection::Valid);
+
+            int new_index;
+
+            new_index = this->GetTileUp(i);
+            if (new_index >= 0)
+                t[new_index] -= Board::TileDirection::Down;
+
+            new_index = this->GetTileDown(i);
+            if (new_index >= 0)
+                t[new_index] -= Board::TileDirection::Up;
+
+            new_index = this->GetTileLeft(i);
+            if (new_index >= 0)
+                t[new_index] -= Board::TileDirection::Right;
+
+            new_index = this->GetTileRight(i);
+            if (new_index >= 0)
+                t[new_index] -= Board::TileDirection::Left;
+        }
     }
 
     return t;
