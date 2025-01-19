@@ -8,6 +8,7 @@ class Board
 public:
     Board();
     Board(std::string puzzle_data);
+    Board(const Board& other);
 
     ~Board();
 
@@ -18,12 +19,12 @@ public:
     int GetNumTiles() const;
     std::string GetTilesStr() const;
 
-public:
+private:
     int size_x;
     int size_y;
     int *tiles;
 
-public:
+private:
     std::string ExtractVariable(std::string puzzle_data, std::string var_name) const;
 
     int DecodeWidth(std::string puzzle_data) const;

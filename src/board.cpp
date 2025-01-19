@@ -2,8 +2,7 @@
 
 #include <regex>
 #include <format>
-
-#include <iostream>
+#include <cstring>
 
 Board::Board() : size_x(0), size_y(0), tiles(nullptr)
 {
@@ -13,6 +12,16 @@ Board::Board() : size_x(0), size_y(0), tiles(nullptr)
 Board::Board(std::string puzzle_data) : size_x(0), size_y(0), tiles(nullptr)
 {
     this->LoadPuzzleData(puzzle_data);
+}
+
+Board::Board(const Board& other)
+{
+    this->size_x = other.size_x;
+    this->size_y = other.size_y;
+
+    int num_tiles = other.GetNumTiles();
+    this->tiles = new int[num_tiles];
+    memcpy(this->tiles, other.tiles, num_tiles * sizeof(int));
 }
 
 Board::~Board()

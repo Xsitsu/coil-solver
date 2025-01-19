@@ -3,10 +3,11 @@
 #include "http_handler.hpp"
 #include "board.hpp"
 
-void output_var(std::string puzzle_data, std::string var_name)
+void output_board(Board b)
 {
-    Board board;
-    std::cout << var_name << ": '" << board.ExtractVariable(puzzle_data, var_name) << "'" << std::endl << std::endl;
+    std::cout << "Width: " << b.GetSizeX() << std::endl;
+    std::cout << "Height: " << b.GetSizeY() << std::endl;
+    std::cout << "Tiles:\n" << b.GetTilesStr() << std::endl;
 }
 
 int main(int argc, char* argv[])
@@ -35,15 +36,9 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    Board board(puzzle_data);
-
-    std::cout << "Width: " << board.GetSizeX() << std::endl;
-    std::cout << "Height: " << board.GetSizeY() << std::endl;
-    std::cout << "Tiles:\n" << board.GetTilesStr() << std::endl;
-    
-    //output_var(puzzle_data, "width");
-    //output_var(puzzle_data, "height");
-    //output_var(puzzle_data, "boardStr");
+    Board board2(puzzle_data);
+    Board board(board2);
+    output_board(board);
 
     return 0;
 }
