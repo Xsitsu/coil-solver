@@ -18,6 +18,7 @@ Board::Board(const Board& other)
 {
     this->size_x = other.size_x;
     this->size_y = other.size_y;
+    this->num_tiles = other.num_tiles;
 
     int num_tiles = other.GetNumTiles();
     this->tiles = new int[num_tiles];
@@ -43,7 +44,7 @@ int Board::GetSizeY() const
 
 int Board::GetNumTiles() const
 {
-    return this->GetSizeX() * this->GetSizeY();
+    return this->num_tiles;
 }
 
 std::string Board::GetTilesStr() const
@@ -117,12 +118,23 @@ bool Board::IsRightEdge(int tile_index) const
     return (tile_index % this->size_x == size_x - 1);
 }
 
+bool Board::IsTopEdge(int tile_index) const
+{
+    return (tile_index < this->size_x);
+}
+
+bool Board::IsBottomEdge(int tile_index) const
+{
+    return (this->num_tiles - tile_index < this->size_x);
+}
+
 void Board::LoadPuzzleData(std::string puzzle_data)
 {
     this->CleanupTiles();
 
     this->size_x = this->DecodeWidth(puzzle_data);
     this->size_y = this->DecodeHeight(puzzle_data);
+    this->num_tiles = this->size_x * this->size_y;
     this->tiles = this->DecodeTiles(puzzle_data);
 }
 
@@ -197,6 +209,17 @@ int* Board::DecodeTiles(std::string puzzle_data) const
             new_index = this->GetTileRight(i);
             if (new_index >= 0)
                 t[new_index] -= Board::TileDirection::Left;
+        }
+        else
+        {
+            if (this->IsLeftEdge(i))
+                t[i] -= Board::TileDirection::Left;
+            if (this->IsRightEdge(i))
+                t[i] -= Board::TileDirection::Right;
+            if (this->IsBottomEdge(i))
+                t[i] -= Board::TileDirection::Down;
+            if (this->IsTopEdge(i))
+                t[i] -= Board::TileDirection::Up;
         }
     }
 

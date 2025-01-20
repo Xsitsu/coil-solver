@@ -43,10 +43,13 @@ public:
 
     bool IsLeftEdge(int tile_index) const;
     bool IsRightEdge(int tile_index) const;
+    bool IsTopEdge(int tile_index) const;
+    bool IsBottomEdge(int tile_index) const;
 
 private:
     int size_x;
     int size_y;
+    int num_tiles;
     int *tiles;
 
 private:
