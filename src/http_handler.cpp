@@ -4,6 +4,8 @@
 #include <regex>
 #include <format>
 
+#include <iostream>
+
 HttpHandler::HttpHandler(std::string username, std::string password)
 {
     this->base_url = this->ConstructBaseUrl(username, password);
@@ -13,6 +15,12 @@ std::string HttpHandler::GetPuzzleData(int level) const
 {
     std::string website_data = this->GetWebsiteData(level);
     std::string puzzle_data = this->ExtractPuzzleData(website_data, level);
+
+    if (puzzle_data == "")
+    {
+        std::cout <<  website_data << std::endl;
+        throw "level not found :(";
+    }
 
     std::string results = puzzle_data;
 
@@ -29,7 +37,7 @@ std::string HttpHandler::GetWebsiteData(int level) const
 
     std::string readbuffer;
 
-    std::string url = this->base_url + "&gotolevel=" + std::to_string(level);
+    std::string url = this->base_url + "&gotolevel=" + std::to_string(level) + "&go=Go+To+Level";
 
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &(this->write_callback));
