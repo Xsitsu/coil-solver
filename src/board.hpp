@@ -18,6 +18,8 @@ public:
         All = 15,
 
         Valid = 16,
+
+        Init = 31,
     };
 
 public:

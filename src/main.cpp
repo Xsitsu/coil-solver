@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #include "http_handler.hpp"
 #include "board.hpp"
@@ -12,7 +13,7 @@ void output_board(Board b)
 
 int main(int argc, char* argv[])
 {
-    if (argc != 3)
+    if (argc <= 3)
     {
         std::cout << "Need 3 args!!" << std::endl;
         return -1;
@@ -21,13 +22,20 @@ int main(int argc, char* argv[])
     std::string username = argv[1];
     std::string password = argv[2];
 
+    int level = 25;
+    if (argc <= 4)
+    {
+        level = std::stoi(argv[3]);
+    }
+
+
     HttpHandler handler(username, password);
 
     std::string puzzle_data;
 
     try
     {
-        puzzle_data = handler.GetPuzzleData(25);
+        puzzle_data = handler.GetPuzzleData(level);
         std::cout << "Got: " << puzzle_data << std::endl;
     }
     catch (char const* err)

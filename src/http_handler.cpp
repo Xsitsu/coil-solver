@@ -11,7 +11,7 @@ HttpHandler::HttpHandler(std::string username, std::string password)
 
 std::string HttpHandler::GetPuzzleData(int level) const
 {
-    std::string website_data = this->GetWebsiteData();
+    std::string website_data = this->GetWebsiteData(level);
     std::string puzzle_data = this->ExtractPuzzleData(website_data, level);
 
     std::string results = puzzle_data;
@@ -21,7 +21,7 @@ std::string HttpHandler::GetPuzzleData(int level) const
     return results;
 }
 
-std::string HttpHandler::GetWebsiteData() const
+std::string HttpHandler::GetWebsiteData(int level) const
 {
     CURL *curl = curl_easy_init();
     if (curl == nullptr)
@@ -29,7 +29,9 @@ std::string HttpHandler::GetWebsiteData() const
 
     std::string readbuffer;
 
-    curl_easy_setopt(curl, CURLOPT_URL, this->base_url.c_str());
+    std::string url = this->base_url + "&gotolevel=" + std::to_string(level);
+
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &(this->write_callback));
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readbuffer);
 

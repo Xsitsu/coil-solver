@@ -56,8 +56,17 @@ std::string Board::GetTilesStr() const
             tile_str += "\n";
 
         int cur_tile = this->tiles[i];
-        if (cur_tile & Board::TileDirection::Valid == Board::TileDirection::Valid)
-            tile_str += "_";
+        bool tile_is_valid = ((cur_tile & Board::TileDirection::Valid) == Board::TileDirection::Valid);
+        if (tile_is_valid)
+        {
+            int count = 0;
+            if ((cur_tile & Board::TileDirection::Up) != 0) count++;
+            if ((cur_tile & Board::TileDirection::Right) != 0) count++;
+            if ((cur_tile & Board::TileDirection::Down) != 0) count++;
+            if ((cur_tile & Board::TileDirection::Left) != 0) count++;
+
+            tile_str += std::to_string(count);
+        }
         else
             tile_str += "W";
     }
@@ -162,7 +171,7 @@ int* Board::DecodeTiles(std::string puzzle_data) const
     int tile_len = tile_data.length() - 2;
 
     int *t = new int[tile_len];
-    memset(t, Board::TileDirection::All, tile_len * sizeof(int));
+    memset(t, Board::TileDirection::Init, tile_len * sizeof(int));
 
     for (int i = 0; i < tile_len; i++)
     {
