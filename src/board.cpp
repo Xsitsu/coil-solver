@@ -70,6 +70,8 @@ std::string Board::GetTilesStr() const
         }
         else
             tile_str += "W";
+
+        tile_str += " ";
     }
     return tile_str;
 }
