@@ -11,11 +11,16 @@ void output_board(Board b)
     std::cout << "Tiles:\n" << b.GetTilesStr() << std::endl;
 }
 
+void usage(std::string prog_name)
+{
+    std::cout << "Usage: " + prog_name + " <username> <password> <level_number>" << std::endl;
+}
+
 int main(int argc, char* argv[])
 {
     if (argc <= 3)
     {
-        std::cout << "Need 3 args!!" << std::endl;
+        usage(argv[0]);
         return -1;
     }
 
