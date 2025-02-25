@@ -76,6 +76,11 @@ std::string Board::GetTilesStr() const
     return tile_str;
 }
 
+int Board::GetTile(int tile_index) const
+{
+    return this->tiles[tile_index];
+}
+
 int Board::GetTileUp(int tile_index) const
 {
     int new_index = tile_index - this->size_x;
@@ -226,4 +231,36 @@ int* Board::DecodeTiles(std::string puzzle_data) const
     }
 
     return t;
+}
+
+std::list<Board> GetIslands() const
+{
+    std::list<Board> islands;
+    Board processed = Board(*this);
+
+    int tile_index = 0;
+    int num_tiles = processed.GetNumTiles();
+    while (tile_index < num_tiles)
+    {
+        while (this->tiles[tile_index] == -1)
+            tile_index++;
+
+
+    }
+
+
+    return islands;
+}
+
+void Board::FloodFill(int tile_index, int num_cons, Board &processed, Board &island) const
+{
+    // Tile was processed already
+    int tile_dat = processed.GetTile(tile_index);
+    if (tile_dat == -1)
+        return;
+
+
+
+
+    //if (processed.GetTileUp(tile_index))
 }

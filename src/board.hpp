@@ -2,6 +2,7 @@
 #define BOARD_HPP_INCLUDE
 
 #include <string>
+#include <list>
 
 class Board
 {
@@ -35,7 +36,9 @@ public:
     int GetSizeY() const;
     int GetNumTiles() const;
     std::string GetTilesStr() const;
+    void FloodFill(int tile_index, int num_cons, Board &processed, Board& island) const;
 
+    int GetTile(int tile_index) const;
     int GetTileUp(int tile_index) const;
     int GetTileDown(int tile_index) const;
     int GetTileLeft(int tile_index) const;
@@ -45,6 +48,9 @@ public:
     bool IsRightEdge(int tile_index) const;
     bool IsTopEdge(int tile_index) const;
     bool IsBottomEdge(int tile_index) const;
+
+    std::list<Board> GetIslands() const;
+
 
 private:
     int size_x;
