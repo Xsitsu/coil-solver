@@ -5,6 +5,8 @@ add_executable(${target}
     http_handler.cpp
     board.hpp
     board.cpp
+    board_preprocessor.hpp
+    board_preprocessor.cpp
 
     main.cpp
 )

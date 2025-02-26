@@ -38,11 +38,21 @@ public:
     std::string GetTilesStr() const;
     void FloodFill(int tile_index, int num_cons, Board &processed, Board& island) const;
 
+    bool IsTileIndexInBounds(int tile_index) const;
+
+    void SetTile(int tile_index, int value);
+
     int GetTile(int tile_index) const;
     int GetTileUp(int tile_index) const;
     int GetTileDown(int tile_index) const;
     int GetTileLeft(int tile_index) const;
     int GetTileRight(int tile_index) const;
+
+    int GetTileIndexUp(int tile_index) const;
+    int GetTileIndexDown(int tile_index) const;
+    int GetTileIndexLeft(int tile_index) const;
+    int GetTileIndexRight(int tile_index) const;
+
 
     bool IsLeftEdge(int tile_index) const;
     bool IsRightEdge(int tile_index) const;
@@ -67,6 +77,8 @@ private:
 
 private:
     void CleanupTiles();
+
+    int GetTileGeneric(int tile_index) const;
 };
 
 #endif // BOARD_HPP_INCLUDE

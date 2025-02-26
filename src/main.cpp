@@ -3,6 +3,7 @@
 
 #include "http_handler.hpp"
 #include "board.hpp"
+#include "board_preprocessor.hpp"
 
 void output_board(Board b)
 {
@@ -51,7 +52,15 @@ int main(int argc, char* argv[])
 
     Board board2(puzzle_data);
     Board board(board2);
+
+
+    BoardPreprocessor proc;
+    Board chokepoints = proc.DetectChokepoints(board);
+
+
     output_board(board);
+    output_board(chokepoints);
+
 
     return 0;
 }
