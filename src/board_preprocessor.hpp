@@ -14,8 +14,6 @@ private:
     bool HasWallTopAndBottom(const Board &board, int tile_index) const;
     bool HasWallLeftAndRight(const Board &board, int tile_index) const;
 
-    bool TileIsWall(int tile) const;
-
 };
 
 #endif //BOARD_PREPROCESSOR_HPP_INCLUDE

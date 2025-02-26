@@ -21,8 +21,8 @@ Board::Board(const Board& other)
     this->num_tiles = other.num_tiles;
 
     int num_tiles = other.GetNumTiles();
-    this->tiles = new int[num_tiles];
-    memcpy(this->tiles, other.tiles, num_tiles * sizeof(int));
+    this->tiles = new Tile[num_tiles];
+    memcpy(this->tiles, other.tiles, num_tiles * sizeof(Tile));
 }
 
 Board::~Board()
@@ -56,16 +56,10 @@ std::string Board::GetTilesStr() const
         if (i % this->GetSizeX() == 0 && i != 0)
             tile_str += "\n";
 
-        int cur_tile = this->tiles[i];
-        bool tile_is_valid = ((cur_tile & Board::TileDirection::Valid) == Board::TileDirection::Valid);
-        if (tile_is_valid)
+        Tile &cur_tile = this->tiles[i];
+        if (!cur_tile.IsWall())
         {
-            int count = 0;
-            if ((cur_tile & Board::TileDirection::Up) != 0) count++;
-            if ((cur_tile & Board::TileDirection::Right) != 0) count++;
-            if ((cur_tile & Board::TileDirection::Down) != 0) count++;
-            if ((cur_tile & Board::TileDirection::Left) != 0) count++;
-
+            int count = 4 - cur_tile.GetNumberWalls();
             tile_str += std::to_string(count);
         }
         else
@@ -81,18 +75,12 @@ bool Board::IsTileIndexInBounds(int tile_index) const
     return (tile_index >= 0 && tile_index < this->GetNumTiles());
 }
 
-void Board::SetTile(int tile_index, int value)
+Tile* Board::GetTile(int tile_index)
 {
     if (this->IsTileIndexInBounds(tile_index))
-        this->tiles[tile_index] = value;
-}
+        return &(this->tiles[tile_index]);
 
-int Board::GetTile(int tile_index) const
-{
-    if (this->IsTileIndexInBounds(tile_index))
-        return this->tiles[tile_index];
-
-    return -1;
+    return nullptr;
 }
 
 int Board::GetTileIndexUp(int tile_index) const
@@ -129,22 +117,53 @@ int Board::GetTileIndexRight(int tile_index) const
     return tile_index + 1;
 }
 
-int Board::GetTileUp(int tile_index) const
+Tile* Board::GetTileUp(int tile_index)
 {
     return this->GetTile(this->GetTileIndexUp(tile_index));
 }
 
-int Board::GetTileDown(int tile_index) const
+Tile* Board::GetTileDown(int tile_index)
 {
     return this->GetTile(this->GetTileIndexDown(tile_index));
 }
 
-int Board::GetTileLeft(int tile_index) const
+Tile* Board::GetTileLeft(int tile_index)
 {
     return this->GetTile(this->GetTileIndexLeft(tile_index));
 }
 
-int Board::GetTileRight(int tile_index) const
+Tile* Board::GetTileRight(int tile_index)
+{
+    return this->GetTile(this->GetTileIndexRight(tile_index));
+}
+
+const Tile* Board::GetTile(int tile_index) const
+{
+    if (this->IsTileIndexInBounds(tile_index))
+        return &(this->tiles[tile_index]);
+
+    return nullptr;
+}
+
+const Tile* Board::GetTileUp(int tile_index) const
+{
+    return this->GetTile(this->GetTileIndexUp(tile_index));
+}
+
+
+const Tile* Board::GetTileDown(int tile_index) const
+{
+    return this->GetTile(this->GetTileIndexDown(tile_index));
+}
+
+
+const Tile* Board::GetTileLeft(int tile_index) const
+{
+    return this->GetTile(this->GetTileIndexLeft(tile_index));
+}
+
+
+const Tile* Board::GetTileRight(int tile_index) const
 {
     return this->GetTile(this->GetTileIndexRight(tile_index));
 }
@@ -173,10 +192,10 @@ void Board::LoadPuzzleData(std::string puzzle_data)
 {
     this->CleanupTiles();
 
-    this->size_x = this->DecodeWidth(puzzle_data);
-    this->size_y = this->DecodeHeight(puzzle_data);
+    this->DecodeWidth(puzzle_data);
+    this->DecodeHeight(puzzle_data);
     this->num_tiles = this->size_x * this->size_y;
-    this->tiles = this->DecodeTiles(puzzle_data);
+    this->DecodeTiles(puzzle_data);
 }
 
 void Board::CleanupTiles()
@@ -207,93 +226,64 @@ std::string Board::ExtractVariable(std::string puzzle_data, std::string var_name
     return result.substr(base.length(), new_len);
 }
 
-int Board::DecodeWidth(std::string puzzle_data) const
+void Board::DecodeWidth(std::string puzzle_data)
 {
-    return std::stoi(this->ExtractVariable(puzzle_data, "width"));
+    this->size_x = std::stoi(this->ExtractVariable(puzzle_data, "width"));
 }
 
-int Board::DecodeHeight(std::string puzzle_data) const
+void Board::DecodeHeight(std::string puzzle_data)
 {
-    return std::stoi(this->ExtractVariable(puzzle_data, "height"));
+    this->size_y = std::stoi(this->ExtractVariable(puzzle_data, "height"));
 }
 
-int* Board::DecodeTiles(std::string puzzle_data) const
+void Board::DecodeTiles(std::string puzzle_data)
 {
+    this->CleanupTiles();
+
     std::string tile_data = this->ExtractVariable(puzzle_data, "boardStr");
 
     int tile_len = tile_data.length() - 2;
 
-    int *t = new int[tile_len];
-    memset(t, Board::TileDirection::Init, tile_len * sizeof(int));
+    this->tiles = new Tile[tile_len];
 
     for (int i = 0; i < tile_len; i++)
     {
+        Tile *cur_tile = this->GetTile(i);
+
         char cur_tile_str = tile_data.c_str()[i + 1];
         if (cur_tile_str == 'X')
         {
-            t[i] &= ~(Board::TileDirection::Valid);
+            cur_tile->SetIsWall();
 
-            int new_index;
+            Tile *other_tile = nullptr;
 
-            new_index = this->GetTileIndexUp(i);
-            if (new_index >= 0)
-                t[new_index] -= Board::TileDirection::Down;
+            other_tile = this->GetTileUp(i);
+            if (other_tile != nullptr)
+                other_tile->SetConnectionDown(false);
 
-            new_index = this->GetTileIndexDown(i);
-            if (new_index >= 0)
-                t[new_index] -= Board::TileDirection::Up;
+            other_tile = this->GetTileDown(i);
+            if (other_tile != nullptr)
+                other_tile->SetConnectionUp(false);
 
-            new_index = this->GetTileIndexLeft(i);
-            if (new_index >= 0)
-                t[new_index] -= Board::TileDirection::Right;
+            other_tile = this->GetTileLeft(i);
+            if (other_tile != nullptr)
+                other_tile->SetConnectionRight(false);
 
-            new_index = this->GetTileIndexRight(i);
-            if (new_index >= 0)
-                t[new_index] -= Board::TileDirection::Left;
+            other_tile = this->GetTileRight(i);
+            if (other_tile != nullptr)
+                other_tile->SetConnectionLeft(false);
         }
         else
         {
             if (this->IsLeftEdge(i))
-                t[i] -= Board::TileDirection::Left;
+               cur_tile->SetConnectionLeft(false);
             if (this->IsRightEdge(i))
-                t[i] -= Board::TileDirection::Right;
+                cur_tile->SetConnectionRight(false);
             if (this->IsBottomEdge(i))
-                t[i] -= Board::TileDirection::Down;
+                cur_tile->SetConnectionDown(false);
             if (this->IsTopEdge(i))
-                t[i] -= Board::TileDirection::Up;
+                cur_tile->SetConnectionUp(false);
         }
     }
-
-    return t;
 }
 
-std::list<Board> Board::GetIslands() const
-{
-    std::list<Board> islands;
-    Board processed = Board(*this);
-
-    int tile_index = 0;
-    int num_tiles = processed.GetNumTiles();
-    while (tile_index < num_tiles)
-    {
-        while (this->tiles[tile_index] == -1)
-            tile_index++;
-
-
-    }
-
-
-    return islands;
-}
-
-void Board::FloodFill(int tile_index, int num_cons, Board &processed, Board &island) const
-{
-    // Tile was processed already
-    int tile_dat = processed.GetTile(tile_index);
-    if (tile_dat == -1)
-        return;
-
-
-
-
-}

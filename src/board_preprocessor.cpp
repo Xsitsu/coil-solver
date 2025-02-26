@@ -13,22 +13,23 @@ Board BoardPreprocessor::DetectChokepoints(const Board &to_process) const
     std::cout << "DetectChokepoints!" << std::endl;
     Board b(to_process);
 
-    int tunnel_val = Board::TileDirection::All && Board::TileDirection::Valid;
-    int non_val = Board::TileDirection::Valid;
-
     int num_tiles = to_process.GetNumTiles();
     for (int i = 0; i < num_tiles; i++)
     {
-        if (!(this->TileIsWall(i)))
+        const Tile *cur_tile = to_process.GetTile(i);
+        if (!(cur_tile->IsWall()))
         {
+            Tile *set_tile = b.GetTile(i);
+            bool set_val = false;
             if (this->HasWallTopAndBottom(to_process, i) || this->HasWallLeftAndRight(to_process, i))
             {
-                b.SetTile(i, tunnel_val);
+                set_val = true;
             }
-            else
-            {
-                b.SetTile(i, non_val);
-            }
+
+            set_tile->SetConnectionUp(set_val);
+            set_tile->SetConnectionDown(set_val);
+            set_tile->SetConnectionLeft(set_val);
+            set_tile->SetConnectionRight(set_val);
         }
     }
 
@@ -37,21 +38,17 @@ Board BoardPreprocessor::DetectChokepoints(const Board &to_process) const
 
 bool BoardPreprocessor::HasWallTopAndBottom(const Board &board, int tile_index) const
 {
-    int tile_1 = board.GetTileUp(tile_index);
-    int tile_2 = board.GetTileDown(tile_index);
+    const Tile *tile_1 = board.GetTileUp(tile_index);
+    const Tile *tile_2 = board.GetTileDown(tile_index);
 
-    return (this->TileIsWall(tile_1) && this->TileIsWall(tile_2));
+    return (tile_1->IsWall() && tile_2->IsWall());
 }
 
 bool BoardPreprocessor::HasWallLeftAndRight(const Board &board, int tile_index) const
 {
-    int tile_1 = board.GetTileLeft(tile_index);
-    int tile_2 = board.GetTileRight(tile_index);
+    const Tile *tile_1 = board.GetTileLeft(tile_index);
+    const Tile *tile_2 = board.GetTileRight(tile_index);
 
-    return (this->TileIsWall(tile_1) && this->TileIsWall(tile_2));
+    return (tile_1->IsWall() && tile_2->IsWall());
 }
 
-bool BoardPreprocessor::TileIsWall(int tile) const
-{
-    return (tile == -1) || ((tile & Board::TileDirection::Valid) != Board::TileDirection::Valid);
-}

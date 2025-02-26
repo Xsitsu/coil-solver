@@ -12,13 +12,14 @@ public:
     void SetConnectionDown(bool val);
     void SetConnectionLeft(bool val);
     void SetConnectionRight(bool val);
-    void SetIsWall(bool val);
+    void SetIsWall();
 
     bool HasConnectionUp() const;
     bool HasConnectionDown() const;
     bool HasConnectionLeft() const;
     bool HasConnectionRight() const;
     bool IsWall() const;
+    bool IsValid() const;
 
 private:
     bool connection_up;
@@ -27,6 +28,7 @@ private:
     bool connection_right;
 
     bool is_wall;
+    bool is_valid;
 
 };
 

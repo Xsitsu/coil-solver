@@ -1,6 +1,6 @@
 #include "tile.hpp"
 
-Tile::Tile()
+Tile::Tile() : connection_up(true), connection_down(true), connection_left(true), connection_right(true), is_wall(false), is_valid(true)
 {
 
 }
@@ -35,9 +35,13 @@ void Tile::SetConnectionRight(bool val)
     this->connection_right = val;
 }
 
-void Tile::SetIsWall(bool val)
+void Tile::SetIsWall()
 {
-    this->is_wall = val;
+    this->is_wall = true;
+    this->SetConnectionUp(false);
+    this->SetConnectionDown(false);
+    this->SetConnectionLeft(false);
+    this->SetConnectionRight(false);
 }
 
 bool Tile::HasConnectionUp() const
@@ -63,4 +67,9 @@ bool Tile::HasConnectionRight() const
 bool Tile::IsWall() const
 {
     return this->is_wall;
+}
+
+bool Tile::IsValid() const
+{
+    return this->is_valid;
 }
