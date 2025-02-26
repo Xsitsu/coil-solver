@@ -7,6 +7,8 @@ add_executable(${target}
     board.cpp
     board_preprocessor.hpp
     board_preprocessor.cpp
+    tile.hpp
+    tile.cpp
 
     main.cpp
 )
