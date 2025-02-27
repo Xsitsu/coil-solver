@@ -38,18 +38,64 @@ Board BoardPreprocessor::DetectChokepoints(const Board &to_process) const
 
 bool BoardPreprocessor::HasWallTopAndBottom(const Board &board, int tile_index) const
 {
-    return this->HasWallDoubleGeneric(
-        board.GetTileUp(tile_index),
-        board.GetTileDown(tile_index)
-    );
+    int x = board.TileIndexToXCoord(tile_index);
+    int y = board.TileIndexToYCoord(tile_index);
+
+    const Tile *top_tile = board.GetTileUp(tile_index);
+    const Tile *bottom_tile = board.GetTileDown(tile_index);
+
+    if (this->TileIsBlocker(top_tile))
+    {
+        if (this->TileIsBlocker(bottom_tile))
+            return true;
+
+       if (this->TileIsBlocker(board.GetTile(x - 1, y + 1)))
+            return true;
+
+        if (this->TileIsBlocker(board.GetTile(x + 1, y + 1)))
+            return true;
+    }
+    else if (this->TileIsBlocker(bottom_tile))
+    {
+        if (this->TileIsBlocker(board.GetTile(x - 1, y - 1)))
+            return true;
+
+        if (this->TileIsBlocker(board.GetTile(x + 1, y - 1)))
+            return true;
+    }
+
+    return false;
 }
 
 bool BoardPreprocessor::HasWallLeftAndRight(const Board &board, int tile_index) const
 {
-    return this->HasWallDoubleGeneric(
-        board.GetTileLeft(tile_index),
-        board.GetTileRight(tile_index)
-    );
+    int x = board.TileIndexToXCoord(tile_index);
+    int y = board.TileIndexToYCoord(tile_index);
+
+    const Tile *left_tile = board.GetTileLeft(tile_index);
+    const Tile *right_tile = board.GetTileRight(tile_index);
+
+    if (this->TileIsBlocker(left_tile))
+    {
+        if (this->TileIsBlocker(right_tile))
+            return true;
+
+       if (this->TileIsBlocker(board.GetTile(x + 1, y - 1)))
+            return true;
+
+        if (this->TileIsBlocker(board.GetTile(x + 1, y + 1)))
+            return true;
+    }
+    else if (this->TileIsBlocker(right_tile))
+    {
+        if (this->TileIsBlocker(board.GetTile(x - 1, y - 1)))
+            return true;
+
+        if (this->TileIsBlocker(board.GetTile(x - 1, y + 1)))
+            return true;
+    }
+
+    return false;
 }
 
 bool BoardPreprocessor::HasWallDoubleGeneric(const Tile *tile1, const Tile *tile2) const
@@ -64,4 +110,9 @@ bool BoardPreprocessor::HasWallDoubleGeneric(const Tile *tile1, const Tile *tile
         tile2_wall = false;
 
     return (tile1_wall && tile2_wall);
+}
+
+bool BoardPreprocessor::TileIsBlocker(const Tile *tile) const
+{
+    return (tile == nullptr || tile->IsWall());
 }

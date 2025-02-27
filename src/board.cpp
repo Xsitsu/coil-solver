@@ -75,6 +75,11 @@ bool Board::IsTileIndexInBounds(int tile_index) const
     return (tile_index >= 0 && tile_index < this->GetNumTiles());
 }
 
+Tile* Board::GetTile(int x, int y)
+{
+    return this->GetTile(this->XYCoordToTileIndex(x, y));
+}
+
 Tile* Board::GetTile(int tile_index)
 {
     if (this->IsTileIndexInBounds(tile_index))
@@ -135,6 +140,11 @@ Tile* Board::GetTileLeft(int tile_index)
 Tile* Board::GetTileRight(int tile_index)
 {
     return this->GetTile(this->GetTileIndexRight(tile_index));
+}
+
+const Tile* Board::GetTile(int x, int y) const
+{
+    return this->GetTile(this->XYCoordToTileIndex(x, y));
 }
 
 const Tile* Board::GetTile(int tile_index) const

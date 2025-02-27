@@ -16,6 +16,7 @@ private:
 
     bool HasWallDoubleGeneric(const Tile *tile1, const Tile *tile2) const;
 
+    bool TileIsBlocker(const Tile *tile) const;
 };
 
 #endif //BOARD_PREPROCESSOR_HPP_INCLUDE

@@ -24,12 +24,14 @@ public:
 
     bool IsTileIndexInBounds(int tile_index) const;
 
+    Tile* GetTile(int x, int y);
     Tile* GetTile(int tile_index);
     Tile* GetTileUp(int tile_index);
     Tile* GetTileDown(int tile_index);
     Tile* GetTileLeft(int tile_index);
     Tile* GetTileRight(int tile_index);
 
+    const Tile* GetTile(int x, int y) const;
     const Tile* GetTile(int tile_index) const;
     const Tile* GetTileUp(int tile_index) const;
     const Tile* GetTileDown(int tile_index) const;
