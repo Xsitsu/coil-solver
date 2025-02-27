@@ -188,6 +188,25 @@ bool Board::IsBottomEdge(int tile_index) const
     return (this->num_tiles - tile_index < this->size_x);
 }
 
+int Board::TileIndexToXCoord(int tile_index) const
+{
+    return (tile_index % this->GetSizeX());
+}
+
+int Board::TileIndexToYCoord(int tile_index) const
+{
+    return (tile_index / this->GetSizeX());
+}
+
+int Board::XYCoordToTileIndex(int x, int y) const
+{
+    int index = x + (y * this->GetSizeX());
+    if (index >= 0 && index < this->GetNumTiles())
+        return index;
+
+    return -1;
+}
+
 void Board::LoadPuzzleData(std::string puzzle_data)
 {
     this->CleanupTiles();

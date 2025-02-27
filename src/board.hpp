@@ -46,6 +46,9 @@ public:
     bool IsTopEdge(int tile_index) const;
     bool IsBottomEdge(int tile_index) const;
 
+    int TileIndexToXCoord(int tile_index) const;
+    int TileIndexToYCoord(int tile_index) const;
+    int XYCoordToTileIndex(int x, int y) const;
 
 private:
     int size_x;
