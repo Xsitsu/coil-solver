@@ -38,17 +38,30 @@ Board BoardPreprocessor::DetectChokepoints(const Board &to_process) const
 
 bool BoardPreprocessor::HasWallTopAndBottom(const Board &board, int tile_index) const
 {
-    const Tile *tile_1 = board.GetTileUp(tile_index);
-    const Tile *tile_2 = board.GetTileDown(tile_index);
-
-    return (tile_1->IsWall() && tile_2->IsWall());
+    return this->HasWallDoubleGeneric(
+        board.GetTileUp(tile_index),
+        board.GetTileDown(tile_index)
+    );
 }
 
 bool BoardPreprocessor::HasWallLeftAndRight(const Board &board, int tile_index) const
 {
-    const Tile *tile_1 = board.GetTileLeft(tile_index);
-    const Tile *tile_2 = board.GetTileRight(tile_index);
-
-    return (tile_1->IsWall() && tile_2->IsWall());
+    return this->HasWallDoubleGeneric(
+        board.GetTileLeft(tile_index),
+        board.GetTileRight(tile_index)
+    );
 }
 
+bool BoardPreprocessor::HasWallDoubleGeneric(const Tile *tile1, const Tile *tile2) const
+{
+    bool tile1_wall = true;
+    bool tile2_wall = true;
+
+    if (tile1 != nullptr && !tile1->IsWall())
+        tile1_wall = false;
+
+    if (tile2 != nullptr && !tile2->IsWall())
+        tile2_wall = false;
+
+    return (tile1_wall && tile2_wall);
+}
