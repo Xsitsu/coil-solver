@@ -56,10 +56,12 @@ int main(int argc, char* argv[])
 
     BoardPreprocessor proc;
     Board chokepoints = proc.DetectChokepoints(board);
+    Board t_juncs = proc.DetectTJunctions(board);
 
 
     output_board(board);
     output_board(chokepoints);
+    output_board(t_juncs);
 
 
     return 0;

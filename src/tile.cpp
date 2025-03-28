@@ -1,6 +1,6 @@
 #include "tile.hpp"
 
-Tile::Tile() : connection_up(true), connection_down(true), connection_left(true), connection_right(true), is_wall(false), is_valid(true)
+Tile::Tile() : connection_up(true), connection_down(true), connection_left(true), connection_right(true), is_wall(false), is_chokepoint(false), is_valid(true)
 {
 
 }
@@ -13,6 +13,11 @@ int Tile::GetNumberWalls() const
     if (this->HasConnectionLeft()) num_walls--;
     if (this->HasConnectionRight()) num_walls--;
     return num_walls;
+}
+
+int Tile::GetNumberConnections() const
+{
+    return 4 - this->GetNumberWalls();
 }
 
 void Tile::SetConnectionUp(bool val)
@@ -38,10 +43,16 @@ void Tile::SetConnectionRight(bool val)
 void Tile::SetIsWall()
 {
     this->is_wall = true;
+    this->is_chokepoint = false;
     this->SetConnectionUp(false);
     this->SetConnectionDown(false);
     this->SetConnectionLeft(false);
     this->SetConnectionRight(false);
+}
+
+void Tile::SetIsChokepoint()
+{
+    this->is_chokepoint = true;
 }
 
 bool Tile::HasConnectionUp() const
@@ -67,6 +78,11 @@ bool Tile::HasConnectionRight() const
 bool Tile::IsWall() const
 {
     return this->is_wall;
+}
+
+bool Tile::IsChokepoint() const
+{
+    return this->is_chokepoint;
 }
 
 bool Tile::IsValid() const

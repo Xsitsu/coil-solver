@@ -20,16 +20,42 @@ Board BoardPreprocessor::DetectChokepoints(const Board &to_process) const
         if (!(cur_tile->IsWall()))
         {
             Tile *set_tile = b.GetTile(i);
-            bool set_val = false;
             if (this->HasWallTopAndBottom(to_process, i) || this->HasWallLeftAndRight(to_process, i))
             {
-                set_val = true;
+                set_tile->SetIsChokepoint();
             }
 
-            set_tile->SetConnectionUp(set_val);
-            set_tile->SetConnectionDown(set_val);
-            set_tile->SetConnectionLeft(set_val);
-            set_tile->SetConnectionRight(set_val);
+            set_tile->SetConnectionUp(set_tile->IsChokepoint());
+            set_tile->SetConnectionDown(set_tile->IsChokepoint());
+            set_tile->SetConnectionLeft(set_tile->IsChokepoint());
+            set_tile->SetConnectionRight(set_tile->IsChokepoint());
+        }
+    }
+
+    return b;
+}
+
+Board BoardPreprocessor::DetectTJunctions(const Board &to_process) const
+{
+    std::cout << "DetectTJunctions!" << std::endl;
+    Board b(to_process);
+
+    int num_tiles = to_process.GetNumTiles();
+    for (int i = 0; i < num_tiles; i++)
+    {
+        const Tile *cur_tile = to_process.GetTile(i);
+        if (!(cur_tile->IsWall()))
+        {
+            Tile *set_tile = b.GetTile(i);
+            if (cur_tile->GetNumberConnections() == 3)
+            {
+                set_tile->SetIsChokepoint();
+            }
+
+            set_tile->SetConnectionUp(set_tile->IsChokepoint());
+            set_tile->SetConnectionDown(set_tile->IsChokepoint());
+            set_tile->SetConnectionLeft(set_tile->IsChokepoint());
+            set_tile->SetConnectionRight(set_tile->IsChokepoint());
         }
     }
 

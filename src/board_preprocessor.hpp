@@ -9,6 +9,7 @@ public:
     BoardPreprocessor();
 
     Board DetectChokepoints(const Board &to_process) const;
+    Board DetectTJunctions(const Board &to_process) const;
 
 private:
     bool HasWallTopAndBottom(const Board &board, int tile_index) const;
