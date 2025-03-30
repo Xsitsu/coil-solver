@@ -6,3 +6,4 @@ build_dir="$script_dir"/cmake-build
 cmake -B "$build_dir" -S "$script_dir"
 
 cmake --build "$build_dir" --target coil-solver
+cp ./cmake-build/bin/coil-solver ./coil-solver
