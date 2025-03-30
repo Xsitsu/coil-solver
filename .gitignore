@@ -1,4 +1,5 @@
 coil-solver
 cmake-build/
 *.swp
+.vscode/
 
