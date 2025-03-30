@@ -1,5 +1,6 @@
 coil-solver
 cmake-build/
+level-cache/
 *.swp
 .vscode/
 

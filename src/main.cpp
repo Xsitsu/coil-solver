@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
     }
 
 
-    HttpHandler handler(username, password);
+    HttpHandler handler(username, password, "./level-cache/");
 
     std::string puzzle_data;
 
