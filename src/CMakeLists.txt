@@ -1,8 +1,9 @@
 set(target "coil-solver")
 
 add_executable(${target}
-    http_handler.hpp
-    http_handler.cpp
+    http/http_handler.hpp
+    http/http_handler.cpp
+
     board.hpp
     board.cpp
     board_preprocessor.hpp
