@@ -3,6 +3,8 @@ set(target "coil-solver")
 add_executable(${target}
     http/http_handler.hpp
     http/http_handler.cpp
+    http/http_cache.hpp
+    http/http_cache.cpp
 
     board.hpp
     board.cpp

@@ -8,16 +8,15 @@
 
 #include <iostream>
 
-HttpHandler::HttpHandler(std::string username, std::string password, std::string cache_directory_path)
+HttpHandler::HttpHandler(std::string username, std::string password, std::string cache_directory_path) : cache(HttpCache(cache_directory_path))
 {
     this->base_url = this->ConstructBaseUrl(username, password);
-    this->SetupCache(cache_directory_path);
 }
 
 std::string HttpHandler::GetPuzzleData(int level) const
 {
-    if (this->HasLevelInCache(level))
-        return this->ReadPuzzleDataFromCache(level);
+    if (this->cache.HasLevelInCache(level))
+        return this->cache.ReadPuzzleDataFromCache(level);
 
     std::string website_data = this->GetWebsiteData(level);
     std::string puzzle_data = this->ExtractPuzzleData(website_data, level);
@@ -29,7 +28,7 @@ std::string HttpHandler::GetPuzzleData(int level) const
     }
 
     std::string results = puzzle_data;
-    this->WritePuzzleDataToCache(level, puzzle_data);
+    this->cache.WritePuzzleDataToCache(level, puzzle_data);
 
     return results;
 }
@@ -93,67 +92,4 @@ size_t HttpHandler::curl_write_callback(char *contents, size_t size, size_t nmem
     size_t realsize = size * nmemb;
     static_cast<std::string*>(userdata)->append(contents, realsize);
     return realsize;
-}
-
-void HttpHandler::SetupCache(std::string cache_directory_path)
-{
-    this->cache_directory_path = cache_directory_path;
-
-    if (this->CacheExists(cache_directory_path))
-    {
-        this->using_cache = this->CanUseCache(cache_directory_path);
-    }
-    else
-    {
-        this->CreateCache(cache_directory_path);
-        this->using_cache = true;
-    }
-}
-
-bool HttpHandler::CacheExists(std::string cache_directory_path) const
-{
-    return std::filesystem::exists(cache_directory_path);
-}
-
-void HttpHandler::CreateCache(std::string cache_directory_path) const
-{
-    std::filesystem::create_directory(cache_directory_path);
-}
-
-bool HttpHandler::CanUseCache(std::string cache_directory_path) const
-{
-    return std::filesystem::is_directory(cache_directory_path);
-}
-
-std::string HttpHandler::GetCacheFilePathForLevel(int level) const
-{
-    return this->cache_directory_path + "/" + std::to_string(level) + ".txt";
-}
-
-bool HttpHandler::HasLevelInCache(int level) const
-{
-    std::fstream fs(this->GetCacheFilePathForLevel(level), std::ios_base::in);
-    return (fs.fail() == false);
-}
-
-std::string HttpHandler::ReadPuzzleDataFromCache(int level) const
-{
-    std::ifstream in(this->GetCacheFilePathForLevel(level), std::ios_base::in);
-    std::string result;
-    std::getline(in, result);
-    return result;
-}
-
-void HttpHandler::WritePuzzleDataToCache(int level, std::string puzzle_data) const
-{
-    std::ofstream fs(this->GetCacheFilePathForLevel(level), std::ios_base::out);
-    if (!fs.fail())
-    {
-        std::cout << "can write!" << std::endl;
-        fs << puzzle_data;
-    }
-    else
-    {
-        std::cout << "cannot write :(" << std::endl;
-    }
 }
