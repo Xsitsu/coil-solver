@@ -124,20 +124,6 @@ bool BoardPreprocessor::HasWallLeftAndRight(const Board &board, int tile_index) 
     return false;
 }
 
-bool BoardPreprocessor::HasWallDoubleGeneric(const Tile *tile1, const Tile *tile2) const
-{
-    bool tile1_wall = true;
-    bool tile2_wall = true;
-
-    if (tile1 != nullptr && !tile1->IsWall())
-        tile1_wall = false;
-
-    if (tile2 != nullptr && !tile2->IsWall())
-        tile2_wall = false;
-
-    return (tile1_wall && tile2_wall);
-}
-
 bool BoardPreprocessor::TileIsBlocker(const Tile *tile) const
 {
     return (tile == nullptr || tile->IsWall());
