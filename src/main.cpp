@@ -52,17 +52,15 @@ int main(int argc, char* argv[])
 
     Board board2(puzzle_data);
     Board board(board2);
+    output_board(board);
 
 
     BoardPreprocessor proc;
     Board chokepoints = proc.DetectChokepoints(board);
-    Board t_juncs = proc.DetectTJunctions(board);
-
-
-    output_board(board);
     output_board(chokepoints);
-    output_board(t_juncs);
 
+    Board t_juncs = proc.DetectTJunctions(board);
+    output_board(t_juncs);
 
     return 0;
 }
