@@ -72,7 +72,7 @@ bool BoardPreprocessor::HasWallTopAndBottom(const Board &board, int tile_index) 
 
     if (this->TileIsWall(top_tile))
     {
-        if (this->TileIsWall(bottom_tile))
+        if (this->TileIsBlocker(bottom_tile))
             return true;
 
        if (this->TileIsWall(board.GetTile(x - 1, y + 1)))
@@ -83,6 +83,9 @@ bool BoardPreprocessor::HasWallTopAndBottom(const Board &board, int tile_index) 
     }
     else if (this->TileIsWall(bottom_tile))
     {
+        if (this->TileIsVoid(top_tile))
+            return true;
+        
         if (this->TileIsWall(board.GetTile(x - 1, y - 1)))
             return true;
 
@@ -103,7 +106,7 @@ bool BoardPreprocessor::HasWallLeftAndRight(const Board &board, int tile_index) 
 
     if (this->TileIsWall(left_tile))
     {
-        if (this->TileIsWall(right_tile))
+        if (this->TileIsBlocker(right_tile))
             return true;
 
        if (this->TileIsWall(board.GetTile(x + 1, y - 1)))
@@ -114,6 +117,9 @@ bool BoardPreprocessor::HasWallLeftAndRight(const Board &board, int tile_index) 
     }
     else if (this->TileIsWall(right_tile))
     {
+        if (this->TileIsVoid(left_tile))
+            return true;
+
         if (this->TileIsWall(board.GetTile(x - 1, y - 1)))
             return true;
 

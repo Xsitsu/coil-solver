@@ -210,9 +210,11 @@ int Board::TileIndexToYCoord(int tile_index) const
 
 int Board::XYCoordToTileIndex(int x, int y) const
 {
-    int index = x + (y * this->GetSizeX());
-    if (index >= 0 && index < this->GetNumTiles())
-        return index;
+    bool x_in_range = (x >= 0 && x < this->GetSizeX());
+    bool y_in_range = (y >= 0 && y < this->GetSizeY());
+
+    if (x_in_range && y_in_range)
+        return x + (y * this->GetSizeX());
 
     return -1;
 }
