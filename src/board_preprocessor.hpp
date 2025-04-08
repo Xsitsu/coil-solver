@@ -15,6 +15,9 @@ private:
     bool HasWallTopAndBottom(const Board &board, int tile_index) const;
     bool HasWallLeftAndRight(const Board &board, int tile_index) const;
 
+    bool TileIsVoid(const Tile *tile) const;
+    bool TileIsWall(const Tile *tile) const;
+
     bool TileIsBlocker(const Tile *tile) const;
 };
 

@@ -70,23 +70,23 @@ bool BoardPreprocessor::HasWallTopAndBottom(const Board &board, int tile_index) 
     const Tile *top_tile = board.GetTileUp(tile_index);
     const Tile *bottom_tile = board.GetTileDown(tile_index);
 
-    if (this->TileIsBlocker(top_tile))
+    if (this->TileIsWall(top_tile))
     {
-        if (this->TileIsBlocker(bottom_tile))
+        if (this->TileIsWall(bottom_tile))
             return true;
 
-       if (this->TileIsBlocker(board.GetTile(x - 1, y + 1)))
+       if (this->TileIsWall(board.GetTile(x - 1, y + 1)))
             return true;
 
-        if (this->TileIsBlocker(board.GetTile(x + 1, y + 1)))
+        if (this->TileIsWall(board.GetTile(x + 1, y + 1)))
             return true;
     }
-    else if (this->TileIsBlocker(bottom_tile))
+    else if (this->TileIsWall(bottom_tile))
     {
-        if (this->TileIsBlocker(board.GetTile(x - 1, y - 1)))
+        if (this->TileIsWall(board.GetTile(x - 1, y - 1)))
             return true;
 
-        if (this->TileIsBlocker(board.GetTile(x + 1, y - 1)))
+        if (this->TileIsWall(board.GetTile(x + 1, y - 1)))
             return true;
     }
 
@@ -101,26 +101,38 @@ bool BoardPreprocessor::HasWallLeftAndRight(const Board &board, int tile_index) 
     const Tile *left_tile = board.GetTileLeft(tile_index);
     const Tile *right_tile = board.GetTileRight(tile_index);
 
-    if (this->TileIsBlocker(left_tile))
+    if (this->TileIsWall(left_tile))
     {
-        if (this->TileIsBlocker(right_tile))
+        if (this->TileIsWall(right_tile))
             return true;
 
-       if (this->TileIsBlocker(board.GetTile(x + 1, y - 1)))
+       if (this->TileIsWall(board.GetTile(x + 1, y - 1)))
             return true;
 
-        if (this->TileIsBlocker(board.GetTile(x + 1, y + 1)))
+        if (this->TileIsWall(board.GetTile(x + 1, y + 1)))
             return true;
     }
-    else if (this->TileIsBlocker(right_tile))
+    else if (this->TileIsWall(right_tile))
     {
-        if (this->TileIsBlocker(board.GetTile(x - 1, y - 1)))
+        if (this->TileIsWall(board.GetTile(x - 1, y - 1)))
             return true;
 
-        if (this->TileIsBlocker(board.GetTile(x - 1, y + 1)))
+        if (this->TileIsWall(board.GetTile(x - 1, y + 1)))
             return true;
     }
 
+    return false;
+}
+
+bool BoardPreprocessor::TileIsVoid(const Tile *tile) const
+{
+    return (tile == nullptr);
+}
+
+bool BoardPreprocessor::TileIsWall(const Tile *tile) const
+{
+    if (tile != nullptr)
+        return tile->IsWall();
     return false;
 }
 
